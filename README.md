@@ -1,4 +1,4 @@
-# DirList
+# DirList [![Go Reference](https://pkg.go.dev/badge/github.com/ayushg3112/dirlist.svg)](https://pkg.go.dev/github.com/ayushg3112/dirlist)
 
 DirList allows you to quickly spin up an HTTP server to view and browse directory listing of any of your folders, and browse them on your browser. 
 
