@@ -41,23 +41,23 @@ func (c *cliOptions) validate() []string {
 	return valErrors
 }
 
-func (c *cliOptions) toProcessingOptions() dirlist.ProcessingOptions {
+func (c *cliOptions) toProcessingOptions() (dirlist.ProcessingOptions, error) {
 	sortingField, err := sort.ToField(c.sortField)
 
 	if err != nil {
-		panic(err)
+		return dirlist.ProcessingOptions{}, err
 	}
 
 	sortingOrder, err := sort.ToOrder(c.sortOrder)
 
 	if err != nil {
-		panic(err)
+		return dirlist.ProcessingOptions{}, err
 	}
 
 	return dirlist.ProcessingOptions{
-		RootDirAbsPath:   c.rootDir,
-		SortField: sortingField,
-		SortOrder: sortingOrder,
-		HTTPPort:  strconv.Itoa(c.port),
-	}
+		RootDirAbsPath: c.rootDir,
+		SortField:      sortingField,
+		SortOrder:      sortingOrder,
+		HTTPPort:       strconv.Itoa(c.port),
+	}, nil
 }

@@ -32,11 +32,18 @@ func start(stdout io.Writer) int {
 		return 4
 	}
 
-	err := dirlist.StartServer(options.toProcessingOptions())
+	processingOptions, err := options.toProcessingOptions()
+
+	if err != nil {
+		fmt.Fprintf(stdout, "failed to parse CLI options: %s\n", err.Error())
+		return 5
+	}
+
+	err = dirlist.StartServer(processingOptions)
 
 	if err != nil {
 		fmt.Fprintf(stdout, "failed to start server : %s\n", err.Error())
-		return 5
+		return 6
 	}
 
 	return 0
