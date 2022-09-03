@@ -29,6 +29,7 @@ func StartSinglePageServer(structure []walk.DirectoryStructure, options ServerOp
 
 		if path == "" || path == "/" {
 			fmt.Fprint(w, html)
+			return
 		}
 
 		filePath := filepath.Join(options.RootDirAbsPath, path)
