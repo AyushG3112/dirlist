@@ -20,7 +20,8 @@ func StartServer(options ProcessingOptions) error {
 	}
 
 	err = http.StartSinglePageServer(structure, http.ServerOptions{
-		Port: options.HTTPPort,
+		Port:           options.HTTPPort,
+		RootDirAbsPath: options.RootDirAbsPath,
 	})
 
 	return err

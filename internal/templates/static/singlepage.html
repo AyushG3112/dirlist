@@ -17,7 +17,7 @@
                         {{ template "singlepagesection" .Children }}
                     </div>
             {{ else }}
-                <a href="{{print .RelPath}}">{{.Name}}</a><br>
+                <a href="/{{print .RelPath}}" target="_blank">{{.Name}}</a><br>
             {{ end }}
         {{ end }}
     {{ end }}
