@@ -2,7 +2,7 @@ package templates
 
 import (
 	"bytes"
-	"html/template"
+	"text/template"
 
 	"github.com/ayushg3112/dirlist/walk"
 

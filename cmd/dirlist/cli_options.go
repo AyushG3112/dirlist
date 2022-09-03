@@ -55,7 +55,7 @@ func (c *cliOptions) toProcessingOptions() dirlist.ProcessingOptions {
 	}
 
 	return dirlist.ProcessingOptions{
-		RootDir:   c.rootDir,
+		RootDirAbsPath:   c.rootDir,
 		SortField: sortingField,
 		SortOrder: sortingOrder,
 		HTTPPort:  strconv.Itoa(c.port),

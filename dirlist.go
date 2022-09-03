@@ -13,7 +13,7 @@ func StartServer(options ProcessingOptions) error {
 		return err
 	}
 
-	structure, err := walk.Walk(options.RootDir, sorter)
+	structure, err := walk.Walk(options.RootDirAbsPath, sorter)
 
 	if err != nil {
 		return err

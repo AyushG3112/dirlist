@@ -16,26 +16,27 @@ type FileInfo struct {
 type DirectoryStructure struct {
 	Level    int
 	Name     string
-	Path     string
+	AbsPath  string
+	RelPath  string
 	IsDir    bool
 	FileInfo FileInfo
 	Children []DirectoryStructure
 }
 
-func Walk(dir string, sorter sort.Sorter) ([]DirectoryStructure, error) {
+func Walk(dirAbsPath string, sorter sort.Sorter) ([]DirectoryStructure, error) {
 	root := DirectoryStructure{
 		Level:    0,
-		Path:     dir,
+		AbsPath:  dirAbsPath,
 		Children: []DirectoryStructure{},
 	}
 
-	err := walk(&root, sorter)
+	err := walk(&root, sorter, dirAbsPath)
 
 	return root.Children, err
 }
 
-func walk(parent *DirectoryStructure, sorter sort.Sorter) error {
-	entries, err := os.ReadDir(parent.Path)
+func walk(parent *DirectoryStructure, sorter sort.Sorter, rootAbsPath string) error {
+	entries, err := os.ReadDir(parent.AbsPath)
 
 	if err != nil {
 		return err
@@ -50,11 +51,19 @@ func walk(parent *DirectoryStructure, sorter sort.Sorter) error {
 			return err
 		}
 
+		absPath := filepath.Join(parent.AbsPath, v.Name())
+		relpath, err := filepath.Rel(rootAbsPath, absPath)
+
+		if err != nil {
+			return err
+		}
+
 		self := DirectoryStructure{
-			Level: parent.Level + 1,
-			Path:  filepath.Join(parent.Path, v.Name()),
-			Name:  v.Name(),
-			IsDir: v.IsDir(),
+			Level:   parent.Level + 1,
+			AbsPath: absPath,
+			RelPath: relpath,
+			Name:    v.Name(),
+			IsDir:   v.IsDir(),
 			FileInfo: FileInfo{
 				ModifiedAt: fileInfo.ModTime(),
 				Size:       fileInfo.Size(),
@@ -63,7 +72,7 @@ func walk(parent *DirectoryStructure, sorter sort.Sorter) error {
 		}
 
 		if self.IsDir {
-			err = walk(&self, sorter)
+			err = walk(&self, sorter, rootAbsPath)
 
 			if err != nil {
 				return err
