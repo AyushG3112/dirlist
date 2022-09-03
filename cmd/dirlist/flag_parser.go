@@ -8,7 +8,7 @@ import (
 
 func parseCLIFlags() cliOptions {
 	flag := pflag.NewFlagSet("dirlist", pflag.ExitOnError)
-	rootDir := flag.StringP("root-dir", "d", "", "Root directory to start directory listing")
+	rootDir := flag.StringP("root-dir", "d", ".", "Root directory to start directory listing. Defaults to $PWD")
 	port := flag.IntP("port", "p", 8000, "Port on which to start the listing server")
 	sortField := flag.StringP("sort-field", "f", "modifiedAt", "Field to sort by")
 	sortOrder := flag.StringP("sort-order", "", "ASC", "Sorting order. ASC/DESC.")
