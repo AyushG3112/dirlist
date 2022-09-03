@@ -1,0 +1,30 @@
+<html>
+
+<head>
+    <title>Directory Listing</title>
+</head>
+
+<body>
+    <style>
+
+    </style>
+
+    {{ define "singlepagesection" }}
+        {{ range . }}
+            {{ if .IsDir }}
+                {{ .Name }}<br>
+                    <div style="margin-left: 1%;">
+                        {{ template "singlepagesection" .Children }}
+                    </div>
+            {{ else }}
+                <a href={{.Path}}>{{.Name}}</a><br>
+            {{ end }}
+        {{ end }}
+    {{ end }}
+
+    <div style="margin-left: 1%;">
+        {{ template "singlepagesection" . }}
+    </div>
+</body>
+
+</html>
