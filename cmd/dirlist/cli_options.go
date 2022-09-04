@@ -14,6 +14,7 @@ type cliOptions struct {
 	sortField string
 	port      int
 	help      bool
+	cached    bool
 	usages    string
 }
 
@@ -59,5 +60,6 @@ func (c *cliOptions) toProcessingOptions() (dirlist.ProcessingOptions, error) {
 		SortField:      sortingField,
 		SortOrder:      sortingOrder,
 		HTTPPort:       strconv.Itoa(c.port),
+		CachedMode:     c.cached,
 	}, nil
 }

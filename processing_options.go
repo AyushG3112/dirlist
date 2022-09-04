@@ -7,4 +7,5 @@ type ProcessingOptions struct {
 	HTTPPort       string
 	SortOrder      sort.Order
 	SortField      sort.Field
+	CachedMode     bool
 }

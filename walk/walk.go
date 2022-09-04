@@ -1,6 +1,8 @@
 package walk
 
 import (
+	"errors"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"time"
@@ -54,8 +56,11 @@ func (w *walker) walk(parent *DirectoryStructure, sorter sort.DirEntrySorter, ro
 
 	for _, v := range entries {
 		fileInfo, err := v.Info()
-
 		if err != nil {
+			if errors.Is(err, fs.ErrPermission) {
+				continue
+			}
+
 			return err
 		}
 
@@ -83,6 +88,10 @@ func (w *walker) walk(parent *DirectoryStructure, sorter sort.DirEntrySorter, ro
 			err = w.walk(&self, sorter, rootAbsPath)
 
 			if err != nil {
+				if errors.Is(err, fs.ErrPermission) {
+					continue
+				}
+
 				return err
 			}
 		}

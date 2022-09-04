@@ -14,15 +14,33 @@ import (
 type ServerOptions struct {
 	Port           string
 	RootDirAbsPath string
+	CachedMode     bool
 }
 
 func StartSinglePageServer(walker walk.Walker, sorter sort.DirEntrySorter, options ServerOptions) error {
+	// Check that there's no FS issue while traversing the structure
+	structure, err := walker.Walk(sorter)
+	if err != nil {
+		return err
+	}
+
+	html, err := templates.GenerateSinglePageTemplateHTML(structure)
+
+	if err != nil {
+		return err
+	}
+
 	log.Printf("starting the server at port %s", options.Port)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		path := r.URL.Path
 
 		if path == "" || path == "/" {
+			if options.CachedMode {
+				fmt.Fprint(w, html)
+				return
+			}
+
 			structure, err := walker.Walk(sorter)
 			if err != nil {
 				fmt.Fprintf(w, "error while traversing structure: %v", err.Error())

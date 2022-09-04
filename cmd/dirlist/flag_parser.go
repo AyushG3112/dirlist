@@ -12,7 +12,8 @@ func parseCLIFlags() cliOptions {
 	port := flag.IntP("port", "p", 8000, "Port on which to start the listing server")
 	sortField := flag.StringP("sort-field", "f", "modifiedAt", "Field to sort by")
 	sortOrder := flag.StringP("sort-order", "", "ASC", "Sorting order. ASC/DESC.")
-	help := flag.Bool("help", false, "View help")
+	help := flag.BoolP("help", "h", false, "View help")
+	cached := flag.BoolP("cached", "c", false, "Run in cached mode. Cached mode generates the structure once and always shows that even if the underlying structure has changed")
 	flag.Parse(os.Args[1:])
 
 	options := cliOptions{
@@ -21,6 +22,7 @@ func parseCLIFlags() cliOptions {
 		rootDir:   *rootDir,
 		port:      *port,
 		help:      *help,
+		cached:    *cached,
 		usages:    flag.FlagUsages(),
 	}
 

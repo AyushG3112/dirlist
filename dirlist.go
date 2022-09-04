@@ -22,6 +22,7 @@ func StartServer(options ProcessingOptions) error {
 	err = http.StartSinglePageServer(walker, sorter, http.ServerOptions{
 		Port:           options.HTTPPort,
 		RootDirAbsPath: options.RootDirAbsPath,
+		CachedMode:     options.CachedMode,
 	})
 
 	return err
