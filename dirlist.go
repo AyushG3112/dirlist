@@ -7,19 +7,19 @@ import (
 )
 
 func StartServer(options ProcessingOptions) error {
-	sorter, err := sort.NewSorter(options.SortField, options.SortOrder)
+	sorter, err := sort.NewDirEntrySorter(options.SortField, options.SortOrder)
 
 	if err != nil {
 		return err
 	}
 
-	structure, err := walk.Walk(options.RootDirAbsPath, sorter)
+	walker, err := walk.NewWalker(options.RootDirAbsPath)
 
 	if err != nil {
 		return err
 	}
 
-	err = http.StartSinglePageServer(structure, http.ServerOptions{
+	err = http.StartSinglePageServer(walker, sorter, http.ServerOptions{
 		Port:           options.HTTPPort,
 		RootDirAbsPath: options.RootDirAbsPath,
 	})

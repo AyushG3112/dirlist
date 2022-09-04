@@ -23,26 +23,34 @@ type DirectoryStructure struct {
 	Children []DirectoryStructure
 }
 
-func Walk(dirAbsPath string, sorter sort.Sorter) ([]DirectoryStructure, error) {
+type Walker interface {
+	Walk(sorter sort.DirEntrySorter) ([]DirectoryStructure, error)
+}
+
+type walker struct {
+	dirAbsPath string
+}
+
+func (w *walker) Walk(sorter sort.DirEntrySorter) ([]DirectoryStructure, error) {
 	root := DirectoryStructure{
 		Level:    0,
-		AbsPath:  dirAbsPath,
+		AbsPath:  w.dirAbsPath,
 		Children: []DirectoryStructure{},
 	}
 
-	err := walk(&root, sorter, dirAbsPath)
+	err := w.walk(&root, sorter, w.dirAbsPath)
 
 	return root.Children, err
 }
 
-func walk(parent *DirectoryStructure, sorter sort.Sorter, rootAbsPath string) error {
+func (w *walker) walk(parent *DirectoryStructure, sorter sort.DirEntrySorter, rootAbsPath string) error {
 	entries, err := os.ReadDir(parent.AbsPath)
 
 	if err != nil {
 		return err
 	}
 
-	sorter(entries)
+	sorter.Sort(entries)
 
 	for _, v := range entries {
 		fileInfo, err := v.Info()
@@ -72,7 +80,7 @@ func walk(parent *DirectoryStructure, sorter sort.Sorter, rootAbsPath string) er
 		}
 
 		if self.IsDir {
-			err = walk(&self, sorter, rootAbsPath)
+			err = w.walk(&self, sorter, rootAbsPath)
 
 			if err != nil {
 				return err
@@ -83,4 +91,8 @@ func walk(parent *DirectoryStructure, sorter sort.Sorter, rootAbsPath string) er
 	}
 
 	return nil
+}
+
+func NewWalker(dirAbsPath string) (Walker, error) {
+	return &walker{dirAbsPath: dirAbsPath}, nil
 }
