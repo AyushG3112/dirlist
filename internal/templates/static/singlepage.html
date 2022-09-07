@@ -6,25 +6,80 @@
 
 <body>
     <style>
+        .hide-element {
+            display: none;
+        }
+        .directory {
+            cursor: pointer;
+            margin-top: 0.5em;
+            margin-left: 3px;
+            display: flex;
+            align-items: center;
 
+            -webkit-user-select: none; /* Safari */        
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE10+/Edge */
+            user-select: none; /* Standard */
+        }
+        .directory:hover {
+            color: grey;
+        }
+        .directory-body {
+            margin-left: 1%; 
+            border-left: 1px solid black;
+            padding-top: 0.5em;
+        }
+        .collapsed .directory-body {
+            display: none;
+        }
+        .directory::before {
+            content: "\02C5";
+            border: 1px solid black;
+            padding: 0.3em;
+            margin-right: 0.3em;
+        }
+        .collapsed .directory::before {
+            content: "\02C3";
+        }
+        .flex-center {
+            display: flex;
+            align-items: center;
+        }
     </style>
 
     {{ define "singlepagesection" }}
         {{ range . }}
             {{ if .IsDir }}
-                {{ .Name }}<br>
-                    <div style="margin-left: 1%;">
-                        {{ template "singlepagesection" .Children }}
-                    </div>
+            <!-- TODO: Check if directory names with spaces break -->
+            <div class="directory-tree collapsed {{.Name}}-{{.RelPath}}">
+                <div class="flex-center">
+                    <span>--</span><div id="{{.Name}}-{{.RelPath}}" class="directory">{{ .Name }}</div>
+                </div>
+                <div class="directory-body">
+                    {{ template "singlepagesection" .Children }}
+                </div>
+            </div>
             {{ else }}
-                <a href="/{{print .RelPath}}" target="_blank">{{.Name}}</a><br>
+            <div class="flex-center">
+                <span>--</span><a href="/{{print .RelPath}}" target="_blank">{{.Name}}</a><br>
+            </div>
             {{ end }}
         {{ end }}
     {{ end }}
 
-    <div style="margin-left: 1%;">
+    <div style="margin-left: 1%;" hello>
         {{ template "singlepagesection" . }}
     </div>
+
+    <script>
+        const directories = document.getElementsByClassName("directory");
+        for (let i = 0; i < directories.length; i++) {
+            directories[i].onclick = (e) => {
+                const directorysChild = document.getElementsByClassName(e.target.id)[0];
+                directorysChild.classList.toggle("collapsed");
+            }
+        }
+    </script>
 </body>
 
 </html>
