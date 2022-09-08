@@ -9,20 +9,20 @@
         .hide-element {
             display: none;
         }
-        .directory {
-            cursor: pointer;
+        .directory-name {
             margin-top: 0.5em;
             margin-left: 3px;
             display: flex;
             align-items: center;
 
-            -webkit-user-select: none; /* Safari */        
-            -moz-user-select: none; /* Firefox */
-            -ms-user-select: none; /* IE10+/Edge */
-            user-select: none; /* Standard */
+            -webkit-user-select: none;   
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
-        .directory:hover {
+        .directory-header:hover {
             color: grey;
+            cursor: pointer;
         }
         .directory-body {
             margin-left: 1%; 
@@ -32,28 +32,28 @@
         .collapsed .directory-body {
             display: none;
         }
-        .directory::before {
+        .directory-name::before {
             content: "\02C5";
             border: 1px solid black;
             padding: 0.3em;
             margin-right: 0.3em;
         }
-        .collapsed .directory::before {
+        .collapsed .directory-name::before {
             content: "\02C3";
         }
         .flex-center {
             display: flex;
             align-items: center;
+            width: max-content;
         }
     </style>
 
     {{ define "singlepagesection" }}
         {{ range . }}
             {{ if .IsDir }}
-            <!-- TODO: Check if directory names with spaces break -->
-            <div class="directory-tree collapsed {{.Name}}-{{.RelPath}}">
-                <div class="flex-center">
-                    <span>--</span><div id="{{.Name}}-{{.RelPath}}" class="directory">{{ .Name }}</div>
+            <div class="directory-tree collapsed">
+                <div class="flex-center directory-header">
+                    <span>--</span><span class="directory-name">{{ .Name }}</span>
                 </div>
                 <div class="directory-body">
                     {{ template "singlepagesection" .Children }}
@@ -67,16 +67,16 @@
         {{ end }}
     {{ end }}
 
-    <div style="margin-left: 1%;" hello>
+    <div style="margin-left: 1%;">
         {{ template "singlepagesection" . }}
     </div>
 
     <script>
-        const directories = document.getElementsByClassName("directory");
+        const directories = document.getElementsByClassName("directory-header");
         for (let i = 0; i < directories.length; i++) {
             directories[i].onclick = (e) => {
-                const directorysChild = document.getElementsByClassName(e.target.id)[0];
-                directorysChild.classList.toggle("collapsed");
+                const directorySection = e.currentTarget.parentNode;
+                directorySection.classList.toggle("collapsed");
             }
         }
     </script>
