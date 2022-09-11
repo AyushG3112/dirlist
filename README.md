@@ -25,6 +25,13 @@ Usage:
 
 ### Start a Server
 
+To start a server in the current directory with default options:
+```
+$ dirlist
+2022/09/03 16:13:10 starting the server at port 8000
+```
+
+To start a server in another directory:
 ```
 $ dirlist --root-dir /path/to/folder --sort-order ASC --sort-field modifiedAt
 2022/09/03 16:15:24 starting the server at port 8000
