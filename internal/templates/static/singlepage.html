@@ -6,18 +6,59 @@
 
 <body>
     <style>
-
+        .directory-name {
+            margin-top: 0.5em;
+            margin-left: 3px;
+            display: flex;
+            align-items: center;
+            -webkit-user-select: none;   
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        .directory-header:hover {
+            color: grey;
+            cursor: pointer;
+        }
+        .directory-body {
+            margin-left: 1%; 
+            border-left: 1px solid black;
+            padding-top: 0.5em;
+        }
+        .collapsed .directory-body {
+            display: none;
+        }
+        .directory-name::before {
+            content: "\02C5";
+            border: 1px solid black;
+            padding: 0.3em;
+            margin-right: 0.3em;
+        }
+        .collapsed .directory-name::before {
+            content: "\02C3";
+        }
+        .flex-center {
+            display: flex;
+            align-items: center;
+            width: max-content;
+        }
     </style>
 
     {{ define "singlepagesection" }}
         {{ range . }}
             {{ if .IsDir }}
-                {{ .Name }}<br>
-                    <div style="margin-left: 1%;">
+                <div class="directory-tree collapsed">
+                    <div class="flex-center directory-header">
+                        <span>--</span><span class="directory-name">{{ .Name }}</span>
+                    </div>
+                    <div class="directory-body">
                         {{ template "singlepagesection" .Children }}
                     </div>
+                </div>
             {{ else }}
-                <a href="/{{print .RelPath}}" target="_blank">{{.Name}}</a><br>
+                <div class="flex-center">
+                    <span>--</span><a href="/{{print .RelPath}}" target="_blank">{{.Name}}</a><br>
+                </div>
             {{ end }}
         {{ end }}
     {{ end }}
@@ -25,6 +66,21 @@
     <div style="margin-left: 1%;">
         {{ template "singlepagesection" . }}
     </div>
+
+    <script>
+        const directories = document.getElementsByClassName("directory-header");
+        const toggleVisibilityOnClick = (e) => {
+            const directorySection = e.currentTarget.parentNode;
+            directorySection.classList.toggle("collapsed");
+            if (directorySection.classList.contains("collapsed")) {
+                const childDirectories = directorySection.getElementsByClassName("directory-tree");
+                for (let i = 0; i < childDirectories.length; i++) childDirectories[i].classList.add("collapsed");
+            }
+        }
+        for (let i = 0; i < directories.length; i++) {
+            directories[i].addEventListener("click", toggleVisibilityOnClick)
+        }
+    </script>
 </body>
 
 </html>
