@@ -6,15 +6,11 @@
 
 <body>
     <style>
-        .hide-element {
-            display: none;
-        }
         .directory-name {
             margin-top: 0.5em;
             margin-left: 3px;
             display: flex;
             align-items: center;
-
             -webkit-user-select: none;   
             -moz-user-select: none;
             -ms-user-select: none;
@@ -51,18 +47,18 @@
     {{ define "singlepagesection" }}
         {{ range . }}
             {{ if .IsDir }}
-            <div class="directory-tree collapsed">
-                <div class="flex-center directory-header">
-                    <span>--</span><span class="directory-name">{{ .Name }}</span>
+                <div class="directory-tree collapsed">
+                    <div class="flex-center directory-header">
+                        <span>--</span><span class="directory-name">{{ .Name }}</span>
+                    </div>
+                    <div class="directory-body">
+                        {{ template "singlepagesection" .Children }}
+                    </div>
                 </div>
-                <div class="directory-body">
-                    {{ template "singlepagesection" .Children }}
-                </div>
-            </div>
             {{ else }}
-            <div class="flex-center">
-                <span>--</span><a href="/{{print .RelPath}}" target="_blank">{{.Name}}</a><br>
-            </div>
+                <div class="flex-center">
+                    <span>--</span><a href="/{{print .RelPath}}" target="_blank">{{.Name}}</a><br>
+                </div>
             {{ end }}
         {{ end }}
     {{ end }}
@@ -73,11 +69,16 @@
 
     <script>
         const directories = document.getElementsByClassName("directory-header");
-        for (let i = 0; i < directories.length; i++) {
-            directories[i].onclick = (e) => {
-                const directorySection = e.currentTarget.parentNode;
-                directorySection.classList.toggle("collapsed");
+        const toggleVisibilityOnClick = (e) => {
+            const directorySection = e.currentTarget.parentNode;
+            directorySection.classList.toggle("collapsed");
+            if (directorySection.classList.contains("collapsed")) {
+                const childDirectories = directorySection.getElementsByClassName("directory-tree");
+                for (let i = 0; i < childDirectories.length; i++) childDirectories[i].classList.add("collapsed");
             }
+        }
+        for (let i = 0; i < directories.length; i++) {
+            directories[i].addEventListener("click", toggleVisibilityOnClick)
         }
     </script>
 </body>
